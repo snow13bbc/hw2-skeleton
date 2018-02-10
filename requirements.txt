@@ -1,4 +1,4 @@
 scipy>=0.18.1
 numpy>=1.11.2
 pytest>=3.0
-matplotlib.pyplot
+matplotlib>=2.0.0

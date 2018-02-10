@@ -1,7 +1,6 @@
 from .utils import Atom, Residue, ActiveSite
 import random
 import numpy as np
-from sklearn.cluster import AgglomerativeClustering
 import os
 import matplotlib.pyplot as plt
 import math

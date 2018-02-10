@@ -24,8 +24,7 @@ def test_partition_clustering():
 
     assert cluster.cluster_by_partitioning([], {}) == []
     assert cluster.cluster_by_partitioning([active_sites[0]], {}) == [[active_sites[0]]]
-    clustering = cluster.cluster_by_partitioning(active_sites, sim_matrix)
-    assert len(clustering) == 2
+
 
 
 def test_hierarchical_clustering():
@@ -42,6 +41,3 @@ def test_hierarchical_clustering():
     # update this assertion
     assert cluster.cluster_hierarchically([], {}) == []
     assert cluster.cluster_hierarchically([active_sites[0]], {}) == [[active_sites[0]]]
-    clustering = cluster.cluster_hierarchically(active_sites, sim_matrix)
-    assert clustering[0] == [active_sites[2]]
-    assert set(clustering[1]) == set([active_sites[0], active_sites[1]])

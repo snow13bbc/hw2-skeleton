@@ -1,5 +1,6 @@
 import glob
 import os
+import numpy as np
 from .utils import Atom, Residue, ActiveSite
 
 
@@ -66,7 +67,36 @@ def read_active_site(filepath):
 
             else:  # I've reached a TER card
                 active_site.residues.append(residue)
+                """
+                Categorizing the types of amino acid residues by their chemical properties.
+                Residue categories = Acidic, Basic, hydrophobic, Non-Polar, Polar.
+                Counting the number of amino acid residues in an active site in a dictionary.
+                """
+        AA_residues = {}
+        aminoacids = ['ASP','GLU','HIS','ARG','LYS','SER','THR',
+                    'ASN','GLN','CYS','PHE','TRP','TYR','GLY',
+                    'ALA','VAL','LEU','ILE','MET','PRO']
+#Initialize the dictionary by listing all amino acids as keys first.
+        for AA in aminoacids:
+            AA_residues[AA] = 0
+#Counting the occurance of amino acids in actve site as a value to the key.
+        for res in active_site.residues:
+            if res.type not in AA_residues:
+                AA_residues[res.type] = 1
+            else:
+                AA_residues[res.type] += 1
+        total_residues = sum(AA_residues.values()) # total residues in active site
+#Categorizing the residues.
+    residue_cat = np.array([0.0]*5)
+    residue_cat[0] = AA_residues['ASP'] + AA_residues['GLU'] #'acidic'
+    residue_cat[1] = AA_residues['HIS'] + AA_residues['ARG'] + AA_residues['LYS'] #'basic'
+    residue_cat[2] = AA_residues['PHE'] + AA_residues['TRP'] + AA_residues['TYR'] #'hydrophobic'
+    residue_cat[3] = AA_residues['GLY'] + AA_residues['ALA'] + AA_residues['VAL'] + AA_residues['LEU'] + AA_residues['ILE'] + AA_residues['MET'] + AA_residues['PRO'] #'nonpolar'
+    residue_cat[4] = AA_residues['SER'] + AA_residues['THR'] + AA_residues['ASN'] + AA_residues['GLN'] + AA_residues['CYS'] #'polar'
+#Calculating each residue categories observed in active site as a fraction.
+    residue_cat = residue_cat/total_residues
 
+    active_site.categories = residue_cat # add categories to the active site
     return active_site
 
 
@@ -91,7 +121,6 @@ def write_clustering(filename, clusters):
 def write_mult_clusterings(filename, clusterings):
     """
     Write a series of clusterings of ActiveSite instances out to a file.
-
     Input: a filename and a list of clusterings of ActiveSite instances
     Output: none
     """
